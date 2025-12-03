@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+groq
+qdrant-client
+pydantic
+python-dotenv
+faker
+presidio-analyzer
+presidio-anonymizer
+spacy
+pypdf
+fastembed
+reportlab
+langgraph
+langchain-groq
+langchain-core

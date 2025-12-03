@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+qdrant_data/
+data/store_policies.pdf
+data/users.json
+data/stores.json
