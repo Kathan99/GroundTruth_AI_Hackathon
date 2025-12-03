@@ -24,6 +24,32 @@ function addMessage(content, isUser) {
     scrollToBottom();
 }
 
+let currentUserId = "GUEST";
+let userLat = 19.10;
+let userLon = 72.78;
+
+function getLocation() {
+    const statusSpan = document.getElementById('location-status');
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                userLat = position.coords.latitude;
+                userLon = position.coords.longitude;
+                console.log("Location acquired:", userLat, userLon);
+                statusSpan.textContent = "📍 Location Active";
+            },
+            (error) => {
+                console.warn("Location access denied/error. Using default.", error);
+                statusSpan.textContent = "⚠️ Location Denied (Using Default)";
+            }
+        );
+    } else {
+        statusSpan.textContent = "❌ Geolocation Not Supported";
+    }
+}
+
+getLocation();
+
 async function sendMessage() {
     const query = userInput.value.trim();
     if (!query) return;
@@ -45,14 +71,19 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                user_id: "USR-001",
+                user_id: currentUserId,
                 query: query,
-                latitude: 19.10,
-                longitude: 72.78
+                latitude: userLat,
+                longitude: userLon
             }),
         });
 
         const data = await response.json();
+
+        if (data.user_id && data.user_id !== currentUserId) {
+            currentUserId = data.user_id;
+            console.log("Logged in as:", currentUserId);
+        }
 
         chatHistory.removeChild(loadingDiv);
 

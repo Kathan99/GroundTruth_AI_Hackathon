@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chai Point Support Agent</title>
+    <title>Velvet Brew Support</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
+
 <body>
     <div class="chat-container">
         <header>
-            <div class="logo">☕</div>
+            <div class="logo">✨</div>
             <div class="title">
-                <h1>Chai Point Support</h1>
+                <h1>Velvet Brew</h1>
                 <span class="status">Online</span>
+                <span id="location-status" style="font-size: 10px; opacity: 0.7;">Locating...</span>
             </div>
         </header>
-        
+
         <div id="chat-history" class="chat-history">
             <div class="message agent-message">
                 <div class="message-content">
-                    <p>Namaste! I'm your Chai Point assistant. How can I help you today?</p>
+                    <p>Welcome to Velvet Brew! ✨ Do you have a Member ID or Phone Number? If not, we can continue as a
+                        guest!</p>
                 </div>
             </div>
         </div>
@@ -29,10 +33,15 @@
         <div class="input-area">
             <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
             <button id="send-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
             </button>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

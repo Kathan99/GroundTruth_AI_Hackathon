@@ -134,8 +134,43 @@ def create_robust_pdf(filename):
         Story.append(Paragraph(f"• {h}: Open (Special Hours: 10:00 AM - 08:00 PM)", styles["Justify"]))
     
     Story.append(PageBreak())
+    
+    # Load Store Data
+    import json
+    with open("data/stores.json", "r") as f:
+        stores_data = json.load(f)
 
-    add_chapter_title("3. Order Fulfillment, Delivery & Cancellation Policies")
+    add_chapter_title("3. Store Locations & Contact Details")
+    Story.append(Paragraph("Directory of all Velvet Brew outlets across India.", styles["Justify"]))
+    Story.append(Spacer(1, 12))
+    
+    loc_table_data = [["Store Name", "City", "Address", "Phone"]]
+    
+    for store in stores_data:
+        # Extract City from address (simple split)
+        city = store["location"]["address"].split(",")[-2].strip()
+        row = [
+            Paragraph(store["name"], styles["BodyText"]),
+            city,
+            Paragraph(store["location"]["address"], styles["BodyText"]),
+            f"+91-{random.randint(70000, 99999)}-{random.randint(10000, 99999)}"
+        ]
+        loc_table_data.append(row)
+        
+    t = Table(loc_table_data, colWidths=[120, 80, 200, 100], repeatRows=1)
+    t.setStyle(TableStyle([
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+    Story.append(t)
+    Story.append(PageBreak())
+
+    add_chapter_title("4. Order Fulfillment, Delivery & Cancellation Policies")
     
     policies = [
         ("Delivery Partners", "We partner with Swiggy, Zomato, and Dunzo. All orders must be handed over within 7 minutes of preparation."),

@@ -1,5 +1,5 @@
 import os
-from typing import TypedDict, Annotated, List
+from typing import TypedDict, Annotated, List, Dict
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
@@ -20,6 +20,7 @@ class AgentState(TypedDict):
     context_str: str
     rag_str: str
     response: str
+    is_login_event: bool
 
 class SupportAgent:
     def __init__(self):
@@ -51,7 +52,7 @@ class SupportAgent:
         workflow = StateGraph(AgentState)
 
         workflow.add_node("anonymize", self.anonymize_node)
-        workflow.add_node("retrieve_context", self.context_node)
+        workflow.add_node("retrieve_context", self.retrieve_context)
         workflow.add_node("retrieve_rag", self.rag_node)
         workflow.add_node("generate", self.generate_node)
 
@@ -67,9 +68,21 @@ class SupportAgent:
         masked = self.privacy.anonymize(state["query"])
         return {"masked_query": masked}
 
-    def context_node(self, state: AgentState):
-        ctx = self.context.format_context(state["user_id"], state["lat"], state["lon"])
-        return {"context_str": ctx}
+    def retrieve_context(self, state: Dict): 
+        """
+        Node: Retrieves user context and nearest store info.
+        """
+        include_loc = True
+        
+        context_str = self.context.format_context(
+            user_id=state["user_id"],
+            current_lat=state["lat"],
+            current_lon=state["lon"],
+            query=state["query"],
+            include_location=include_loc
+        )
+        print(f"DEBUG CONTEXT: {context_str}")
+        return {"context_str": context_str}
 
     def rag_node(self, state: AgentState):
         rag_docs = self.rag.search(state["masked_query"])
@@ -103,19 +116,29 @@ class SupportAgent:
         """
         Invokes the graph.
         """
+        final_user_id = user_id
+        is_login = False
+        
+        if user_id == "GUEST":
+            potential_id = self.context.find_user_id(query.strip())
+            if potential_id:
+                final_user_id = potential_id
+                is_login = True
+
         initial_state = {
-            "user_id": user_id,
+            "user_id": final_user_id,
             "query": query,
             "lat": lat,
             "lon": lon,
             "masked_query": "",
             "context_str": "",
             "rag_str": "",
-            "response": ""
+            "response": "",
+            "is_login_event": is_login
         }
         
         result = self.graph.invoke(initial_state)
-        return result["response"]
+        return result["response"], final_user_id
 
 if __name__ == "__main__":
     agent = SupportAgent()

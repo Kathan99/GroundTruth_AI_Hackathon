@@ -41,37 +41,65 @@ def generate_users(num_users=50):
         users.append(user)
     return users
 
-def generate_stores(num_stores=5):
+def generate_stores(num_stores_per_city=5):
     stores = []
-    base_lat = 19.0760
-    base_lon = 72.8777
     
-    for i in range(num_stores):
-        store = {
-            "store_id": f"store_{i+1}",
-            "name": f"Chai Point - {fake.street_name()}",
-            "location": {
-                "latitude": base_lat + random.uniform(-0.05, 0.05),
-                "longitude": base_lon + random.uniform(-0.05, 0.05),
-                "address": fake.address().replace("\n", ", ")
-            },
-            "hours": {
-                "open": "08:00",
-                "close": "22:00"
-            },
-            "stock": {
-                "Masala Chai": True,
-                "Filter Coffee": True,
-                "Samosa": True,
-                "Vada Pav": random.choice([True, False]),
-                "Bun Maska": True,
-                "Ginger Tea": True
-            },
-            "offers": [
-                {"code": "CHAI20", "description": "20% off Masala Chai", "valid_until": "2025-12-31"}
-            ] if random.random() > 0.5 else []
-        }
-        stores.append(store)
+    # Real coordinates for major hubs
+    hubs = {
+        "Mumbai": [
+            {"name": "Bandra West", "lat": 19.0607, "lon": 72.8362},
+            {"name": "Andheri West", "lat": 19.1136, "lon": 72.8697},
+            {"name": "Colaba", "lat": 18.9067, "lon": 72.8147},
+            {"name": "Powai", "lat": 19.1176, "lon": 72.9060},
+            {"name": "Juhu", "lat": 19.1075, "lon": 72.8263}
+        ],
+        "Delhi NCR": [
+            {"name": "Connaught Place", "lat": 28.6315, "lon": 77.2167},
+            {"name": "Hauz Khas", "lat": 28.5494, "lon": 77.2001},
+            {"name": "Cyber Hub (Gurgaon)", "lat": 28.4950, "lon": 77.0895},
+            {"name": "Sector 29 (Gurgaon)", "lat": 28.4695, "lon": 77.0637},
+            {"name": "Noida Sector 18", "lat": 28.5708, "lon": 77.3271}
+        ],
+        "Bangalore": [
+            {"name": "Indiranagar", "lat": 12.9716, "lon": 77.6412},
+            {"name": "Koramangala", "lat": 12.9352, "lon": 77.6245},
+            {"name": "MG Road", "lat": 12.9766, "lon": 77.5993},
+            {"name": "Whitefield", "lat": 12.9698, "lon": 77.7500}
+        ]
+    }
+    
+    store_id_counter = 1
+    
+    for city, locations in hubs.items():
+        for loc in locations:
+            # Create a store at this exact hub location (or slightly offset)
+            store = {
+                "store_id": f"store_{store_id_counter}",
+                "name": f"Velvet Brew - {loc['name']}",
+                "location": {
+                    "latitude": loc["lat"],
+                    "longitude": loc["lon"],
+                    "address": f"{loc['name']}, {city}, India"
+                },
+                "hours": {
+                    "open": "08:00",
+                    "close": "22:00"
+                },
+                "stock": {
+                    "Masala Chai": True,
+                    "Filter Coffee": True,
+                    "Samosa": True,
+                    "Vada Pav": random.choice([True, False]),
+                    "Bun Maska": True,
+                    "Ginger Tea": True
+                },
+                "offers": [
+                    {"code": "BREW20", "description": "20% off Hot Beverages", "valid_until": "2025-12-31"}
+                ] if random.random() > 0.3 else []
+            }
+            stores.append(store)
+            store_id_counter += 1
+            
     return stores
 
 if __name__ == "__main__":
