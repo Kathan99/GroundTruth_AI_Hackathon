@@ -6,17 +6,59 @@
 
 **Context:** Retail customers today expect instant, relevant answers. They ask questions like "Is this store open?", "Do you have size 10 in stock?", or "Where is my order?".
 
-**The Pain Point:** Standard chatbots are "dumb." They give generic FAQ answers. They don't know who the customer is, where they are standing, or what they like. A user standing outside a coffee shop in the rain doesn't want a link to the website; they want to know if they can come inside for a hot drink.
+**The Pain Point:** Standard chatbots are "dumb." They give generic FAQ answers. They don't know who the customer is, where they are standing, or what they like. A user standing outside a coffee shop in the rain doesn't want a link to the website; they want to## 🚀 How to Run
 
-> **My Solution:** I built a **Hyper-Personalized Agent** that combines User History, Real-time Location, and Store Inventory. It knows you love Masala Chai, it knows you are 50m away from the Andheri outlet, and it knows there's a 20% coupon available.
+### 1. Prerequisites
+- Python 3.9+
+- Groq API Key
 
-## 2. Expected End Result
+### 2. Setup
+```bash
+# Clone the repository
+git clone <repo-url>
+cd GroundTruth_AI_Hack
 
-**For the User:**
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-*   **Input:** User texts "I'm cold" (with location metadata).
-*   **Action:** The Agent analyzes the intent, checks the weather context, finds the nearest store, and retrieves the user's favorite drink.
-*   **Output:** "Hi Zayan! Since you're just 2 mins away from our Andheri West outlet, come on in! We have your favorite **Masala Chai** ready, and here's a **20% off coupon** to warm you up."
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up Environment Variables
+cp .env.example .env
+# Edit .env and add your GROQ_API_KEY
+```
+
+### 3. Generate Data (Optional)
+The project comes with sample data, but you can regenerate it:
+```bash
+python generate_data.py  # Generates users.json and stores.json
+python generate_pdf.py   # Generates the robust store_policies.pdf
+```
+
+### 4. Run the Backend
+Start the FastAPI server (with LangGraph agent):
+```bash
+uvicorn app.main:app --reload
+```
+The API will be available at `http://127.0.0.1:8000`.
+
+### 5. Launch the Frontend
+Simply open the `frontend/index.html` file in your browser:
+```bash
+open frontend/index.html  # Mac
+# Or double-click the file in your file explorer
+```
+
+### 6. Usage
+- Type a message in the chat interface (e.g., "How much is a Medium Masala Chai?").
+- The agent will:
+    1. Mask your PII.
+    2. Retrieve your context (User: Zayan, Location: Mumbai).
+    3. Search the PDF Knowledge Base.
+    4. Generate a personalized response.
+Andheri West outlet, come on in! We have your favorite **Masala Chai** ready, and here's a **20% off coupon** to warm you up."
 
 ## 3. Technical Approach
 
