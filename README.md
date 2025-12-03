@@ -68,6 +68,18 @@ I built this system to be **Production-Ready**, focusing on modularity, privacy,
 *   **Issue:** The LLM struggled to read pricing from PDF tables when chunked.
 *   **Solution:** I implemented a "Quick Reference" text-based chapter in the PDF generation script and optimized the chunking strategy (Sliding Window) to ensure the LLM always retrieves the correct price context.
 
+**Challenge 3: Hybrid Location Resolution**
+*   **Issue:** Users often deny browser geolocation or are far from the store, yet still want store-specific info ("I am in Gurgaon").
+*   **Solution:** I built a **Hybrid Location Engine**. It prioritizes precise GPS coordinates if available. If not, it falls back to a text-based search, extracting city names from the user's query to find the relevant store context.
+
+**Challenge 4: Smart User Identification**
+*   **Issue:** Users don't always provide their ID in a structured format (e.g., "My ID is USR-006" vs just "USR-006").
+*   **Solution:** I implemented a **Regex-based Extraction Logic** in the backend. It intelligently parses natural language queries to identify User IDs (`USR-\d+`) or Phone Numbers, allowing for a seamless "Guest to Member" transition without rigid command syntax.
+
+**Challenge 5: Contextual Hallucinations**
+*   **Issue:** The LLM would sometimes invent store hours or offers when the context was missing.
+*   **Solution:** I enforced a strict **"RAG is Truth"** policy in the system prompt and engineered the context manager to explicitly state "Active Offers: None" or "Out of Stock" items, leaving no room for ambiguity.
+
 ## 6. How to Run
 
 ### 1. Prerequisites
